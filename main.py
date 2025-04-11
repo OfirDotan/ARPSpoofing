@@ -8,6 +8,7 @@ from scapy.all import conf
 from scapy.packet import Packet
 from scapy.sendrecv import srp, sendp
 
+
 conf.verb = 0
 conf.promisc = False
 
