@@ -4,8 +4,7 @@
 ARP (Address Resolution Protocol) is a protocol in computer networks which is typically used to retrieve the 2nd layer address (typically MAC) of a host using a 3rd layer address (typically IP).
 In simpler terms, ARP resolves the mapping from an IP address (network layer) to a MAC address (data link layer).
 
-###
-What is an ARP Table? 📋
+### What is an ARP Table? 📋
 
 An ARP table is where a device stores 3rd layer address-to-2nd layer address mappings. When a device resolves an address via ARP, it saves that mapping in the ARP table for faster future lookups. Entries in the table have a timeout and get refreshed to avoid outdated info.
 
@@ -43,7 +42,7 @@ An ARP table is where a device stores 3rd layer address-to-2nd layer address map
 ## ARP Spoofing Basics
 
 ### What is a Man in the middle attack?
-First, before understanding ARP spoofing we need to understand what is a Man in the middle attack (also known as MITM) attack.
+First, before understanding ARP spoofing we need to understand what is a Man in the middle attack (also known as MITM) attack. A MITM is a type of cyberattack where the attacker injects himself in the middle of the communication of 2 hosts. In this type of attack, the two hosts think that they are directly communicating with one another.
 
 ### What is ARP Spoofing?
 ARP Spoofing is a Man in the middle attack (MITM) cyberattack which uses the vulnerability in the ARP protocol in order to capture, read, and edit packets between two hosts on a local network.
@@ -60,4 +59,5 @@ If you want the script to work better, run this command in your appropriate OS.
   sudo sysctl -w net.ipv4.ip_forward=1
   ```
 
-**Disclaimer**: This project is for educational purposes only! Unauthorized use or attacks on networks are illegal and unethical.
+## **Disclaimer**
+ This project is for educational purposes only! Unauthorized use or attacks on networks are illegal and unethical.
