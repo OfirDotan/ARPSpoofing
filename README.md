@@ -45,10 +45,10 @@ An ARP table is where a device stores 3rd layer address-to-2nd layer address map
 First, before understanding ARP spoofing we need to understand what is a Man in the middle attack (also known as MITM) attack. A MITM is a type of cyberattack where the attacker injects himself in the middle of the communication of 2 hosts. In this type of attack, the two hosts think that they are directly communicating with one another.
 
 
-#### Read world analogy
-To better explain a MITM attack, let's use a real world example:
-Imagine that you and your friend were passing notes to each other in class. To do that, you write your note to another person and asks them to pass it along. You expect that your note will reach your friend unopened and safely. So in a MITM attack, the person who inserted himself in as the "note passer", secretly opens the note, reads and and sometimes even changes it before passing it along to your friend.
-In the digital world, this is what happens during a MITM attack. Instead of physical notes, the attacker intercepts and manipulates packets and frames as they travel between two devices, all while making both parties believe they are communicating directly and securely.gi
+#### Read World Analogy
+To better explain a MITM attack, let's use a real world analogy:
+> Imagine that you and your friend were passing notes to each other in class. To do that, you write your note to another person and asks them to pass it along. You expect that your note will reach your friend unopened and safely. So in a MITM attack, the person who inserted himself in as the "note passer", secretly opens the note, reads and and sometimes even changes it before passing it along to your friend.
+In the digital world, this is what happens during a MITM attack. Instead of physical notes, the attacker intercepts and manipulates packets and frames as they travel between two devices, all while making both parties believe they are communicating directly and securely.
 
 ### What is ARP Spoofing?
 ARP Spoofing is a Man in the middle attack (MITM) cyberattack which uses the vulnerability in the ARP protocol in order to capture, read, and edit packets between two hosts on a local network.
