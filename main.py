@@ -2,6 +2,7 @@ import argparse
 import re
 import threading
 
+from typing import Tuple
 from scapy.all import AsyncSniffer, conf
 from scapy.arch import get_if_hwaddr
 from scapy.layers.l2 import ARP, Ether
