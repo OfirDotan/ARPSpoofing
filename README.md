@@ -59,7 +59,7 @@ The script does not rely on IP forwarding, and will work better if the IP forwar
 How to disable IP forwarding?
 * Windows (run as admin)
   ```bash
-  netsh interface ipv4 set global forwarding=disazbled
+  netsh interface ipv4 set global forwarding=disabled
   ```
 * Linux
   ```bash
