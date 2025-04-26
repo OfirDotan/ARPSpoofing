@@ -10,28 +10,25 @@ int initialize_arp(arp_packet* packet, uint8_t senderHardwareAddress[], uint8_t 
 		return -1;
 	}
 
-	//Ethernet header init
-	memcpy(packet->frame.ethernetHeader.sourceAddress, senderHardwareAddress, 6);
-	memcpy(packet->frame.ethernetHeader.destinationAddress, targetHardwareAddress, 6);
-	packet->frame.ethernetHeader.ethernetType = 0x0806;
+	initialize_ethernet(&(packet->frame), targetHardwareAddress, senderHardwareAddress, ETHERNET_CODE, NULL);
 
 	//ARP header init
 	packet->arpHeader.hardwareType = ETHERNET_CODE;
 	packet->arpHeader.protocolType = IPV4_CODE;
-	packet->arpHeader.hardwareLength = 6;
-	packet->arpHeader.protocolLength= 4;
+	packet->arpHeader.hardwareLength = MAC_ADDRESS_SIZE;
+	packet->arpHeader.protocolLength= IP_ADDRESS_SIZE;
 	packet->arpHeader.operation = operation;
 	
-	memcpy(packet->arpHeader.senderHardwareAddress, senderHardwareAddress, 6);
+	memcpy(packet->arpHeader.senderHardwareAddress, senderHardwareAddress, MAC_ADDRESS_SIZE);
 	if (operation == ARP_REQUEST) {
-		memcpy(packet->arpHeader.targetHardwareAddress, 0, 6);
+		memcpy(packet->arpHeader.targetHardwareAddress, 0, MAC_ADDRESS_SIZE);
 	}
 	else {
-		memcpy(packet->arpHeader.targetHardwareAddress, targetHardwareAddress, 6);
+		memcpy(packet->arpHeader.targetHardwareAddress, targetHardwareAddress, MAC_ADDRESS_SIZE);
 	}
 
-	memcpy(packet->arpHeader.senderProtocolAddress, senderProtocolAddress, 4);
-	memcpy(packet->arpHeader.targetProtocolAddress, targetProtocolAddress, 4);
+	memcpy(packet->arpHeader.senderProtocolAddress, senderProtocolAddress, IP_ADDRESS_SIZE);
+	memcpy(packet->arpHeader.targetProtocolAddress, targetProtocolAddress, IP_ADDRESS_SIZE);
 
 	return 0;
 }
