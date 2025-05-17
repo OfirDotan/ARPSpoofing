@@ -44,20 +44,27 @@ An ARP table is where a device stores 3rd layer address-to-2nd layer address map
 ### What is a Man in the middle attack?
 First, before understanding ARP spoofing we need to understand what is a Man in the middle attack (also known as MITM) attack. A MITM is a type of cyberattack where the attacker injects himself in the middle of the communication of 2 hosts. In this type of attack, the two hosts think that they are directly communicating with one another.
 
+
+#### Read World Analogy
+To better explain a MITM attack, let's use a real world analogy:
+> Imagine that you and your friend were passing notes to each other in class. To do that, you write your note to another person and asks them to pass it along. You expect that your note will reach your friend unopened and safely. So in a MITM attack, the person who inserted himself in as the "note passer", secretly opens the note, reads and and sometimes even changes it before passing it along to your friend.
+In the digital world, this is what happens during a MITM attack. Instead of physical notes, the attacker intercepts and manipulates packets and frames as they travel between two devices, all while making both parties believe they are communicating directly and securely.
+
 ### What is ARP Spoofing?
 ARP Spoofing is a Man in the middle attack (MITM) cyberattack which uses the vulnerability in the ARP protocol in order to capture, read, and edit packets between two hosts on a local network.
 
 
-## How to set up?
-If you want the script to work better, run this command in your appropriate OS.
+## Important to note
+The script does not rely on IP forwarding, and will work better if the IP forwarding is off. If 
+How to disable IP forwarding?
 * Windows (run as admin)
   ```bash
-  netsh interface ipv4 set global forwarding=enabled
+  netsh interface ipv4 set global forwarding=disabled
   ```
 * Linux
   ```bash
-  sudo sysctl -w net.ipv4.ip_forward=1
+  sudo sysctl -w net.ipv4.ip_forward=0
   ```
 
 ## **Disclaimer**
- This project is for educational purposes only! Unauthorized use or attacks on networks are illegal and unethical.
+This project is intended for educational purposes only. It was created as a way for me to apply networking concepts I’ve learned in a practical setting and to further explore my personal interest in computer networking, network security, and techniques such as man-in-the-middle (MITM) attacks.
