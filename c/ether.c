@@ -8,7 +8,10 @@
 #include <string.h>
 #include "ether.h"
 
-int initialize_ethernet(ethernet_frame* frame, uint8_t destination_address[], size_t destination_size, uint8_t source_address[], size_t source_size, uint16_t ethernet_type, uint8_t payload[], size_t payload_size) {
+int initialize_ethernet(ethernet_frame* frame, 
+						uint8_t destination_address[], size_t destination_size, 
+						uint8_t source_address[], size_t source_size, 
+						uint16_t ethernet_type, uint8_t payload[], size_t payload_size) {
 	uint8_t default_payload[MINIMUM_PAYLOAD_SIZE] = {0};
 	if (destination_size != 6 || source_size != 6 || payload_size > 1500){
 		return -1;

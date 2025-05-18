@@ -1,11 +1,12 @@
 #ifndef ETHER_H
 #define ETHER_H
+#include <stddef.h>
+#include <stdint.h>
 
 #define MAC_ADDRESS_SIZE 6
 #define PAYLOAD_SIZE_LIMIT 1500
 #define MINIMUM_PAYLOAD_SIZE 46
 
-#include <stdint.h>
 
 typedef struct {
 	uint8_t destination_address[MAC_ADDRESS_SIZE];
@@ -20,7 +21,11 @@ typedef struct {
 	uint8_t payload_size;
 } ethernet_frame;	
 
-int initialize_ethernet(ethernet_frame* frame, uint8_t destination_address[], size_t destination_size, uint8_t source_address[], size_t source_size, uint16_t ethernet_type, uint8_t payload[], size_t payload_size);
+int initialize_ethernet(ethernet_frame* frame, 
+						uint8_t destination_address[], size_t destination_size, 
+						uint8_t source_address[], size_t source_size, 
+						uint16_t ethernet_type, uint8_t payload[], size_t payload_size);
+
 int send_frame(ethernet_frame* frame);
 
 #endif
