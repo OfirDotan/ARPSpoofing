@@ -53,11 +53,23 @@ In the digital world, this is what happens during a MITM attack. Instead of phys
 ### What is ARP Spoofing?
 ARP Spoofing is a Man in the middle attack (MITM) cyberattack which uses the vulnerability in the ARP protocol in order to capture, read, and edit packets between two hosts on a local network.
 
+So basically, take the note-passing example from earlier and apply it to the real world, but this time using the weaknesses of the ARP protocol. The main problem with ARP is that anyone can send fake ARP replies and pretend they have a different IP address than they really do. By doing this, the attacker tricks both sides into registering false information, making them think they’re communicating directly with each other.
+
+Just like the fake note passer who secretly reads or changes the message before passing it on, the attacker sits in the middle of the communication between two devices. This is how a MITM attack happens using ARP spoofing.
+
+<img src="https://i.postimg.cc/kX1ZB8kG/image.png">
+A very high-level example of what ARP spoofing might look like in the real world.
 
 ## Important to note
-The script does not rely on IP forwarding, and will work better if the IP forwarding is off. If 
+This project does not rely on IP forwarding, and will work better if the IP forwarding is off. If 
+
+THIS PROJECT WAS MADE USING 2 DIFFERENT IMPLEMENATATIONS:
+
+Python - A higher level script using scapy. Works on both Windows and Linux.
+C - A low level implementations using raw sockets. Works on linux.
+
 How to disable IP forwarding?
-* Windows (run as admin)
+* Windows (run as admin) **ONLY FOR THE PYTHON SCRIPT
   ```bash
   netsh interface ipv4 set global forwarding=disabled
   ```
