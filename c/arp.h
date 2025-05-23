@@ -2,8 +2,8 @@
 #define ARP_H
 
 #include "ether.h"
-#include <stddef.h>
-#include <stdint.h>
+#include <stddef.h> // For size_t
+#include <stdint.h> // For uint8_t, uint16_t
 
 
 #define MAC_ADDRESS_SIZE 6
