@@ -1,0 +1,1 @@
+gcc -Iinclude src/main.c src/ether.c src/arp.c -o spoofer
