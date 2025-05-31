@@ -1,11 +1,9 @@
-#include <stdio.h>
-#include <arpa/inet.h>
-#include <net/if.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netpacket/packet.h>
-#include <net/ethernet.h>
-#include <string.h>
+#include <sys/socket.h> // For socket functions
+#include <unistd.h> // For close
+#include <arpa/inet.h> // For htons
+#include <net/if.h> // For if_nametoindex
+#include <netpacket/packet.h> // For sockaddr_ll
+#include <string.h> //For memcpy
 #include "ether.h"
 
 int initialize_ethernet(ethernet_frame* frame, 
@@ -34,9 +32,8 @@ int initialize_ethernet(ethernet_frame* frame,
 	return 0;
 }
 
-int send_frame(ethernet_frame* frame) {
+int send_frame(ethernet_frame* frame, int raw_socket_fd) {
 	int ret = 0;
-	int raw_socket_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
 
 	if (raw_socket_fd < 0) {
 		ret -1;
@@ -47,10 +44,10 @@ int send_frame(ethernet_frame* frame) {
 	memset(&socket_address, 0, sizeof(struct sockaddr_ll));
 
 	socket_address.sll_family = AF_PACKET;
-	socket_address.sll_protocol = htons(ETH_P_ALL);
+	socket_address.sll_protocol = htons(ALL_PROTOCOLS);
 	socket_address.sll_ifindex =  if_nametoindex("ens33");
 
-	socket_address.sll_halen = ETH_ALEN;
+	socket_address.sll_halen = MAC_ADDRESS_SIZE;
 	memcpy(socket_address.sll_addr, frame->ethernet_header.destination_address, MAC_ADDRESS_SIZE);
 
 	int frame_size = sizeof(ether_header) + frame->payload_size;
