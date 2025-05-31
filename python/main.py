@@ -60,7 +60,7 @@ def active_spoofing(src_ip: str, dst_ip: str, dst_mac: str) -> None:
     This function receives 2 hosts, and acts as the ARP response from the src to the dst.
     :param src_ip: The src ip we want to impose as.
     :param dst_ip: The destination ip we want to trick.
-    :param dst_mac: The desti#ifndef ARP_H
+    :param dst_mac: The destination mac we want to trick.
     """
 
     spoof_packet = Ether(dst=dst_mac) / ARP(op=2, psrc=src_ip, pdst=dst_ip, hwdst=dst_mac)
