@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h> // For socket functions
 #include <arpa/inet.h> // For htons
 #include <unistd.h> // For close
