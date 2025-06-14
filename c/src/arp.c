@@ -1,8 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
+#include <string.h> // For memcpy
+#include <stddef.h> // For size_t
+#include <stdlib.h> // For malloc
+#include <arpa/inet.h> // For htons
 #include <net/if.h> // For if_nametoindex
 #include <netpacket/packet.h> // For sockaddr_ll
 #include "common.h"
