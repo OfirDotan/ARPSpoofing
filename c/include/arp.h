@@ -2,8 +2,8 @@
 #define ARP_H
 
 #include "ether.h"
-#include <stddef.h>
-#include <stdint.h>
+#include <stddef.h> // For size_t
+#include <stdint.h> // For uint8_t, uint16_t
 
 
 #define MAC_ADDRESS_SIZE 6
@@ -13,7 +13,9 @@
 #define ETHERNET_CODE 1
 #define IPV4_CODE 0x0800
 #define ARP_CODE 0x0806
-
+#define ARP_BUFFER_SIZE 1500
+#define BROADCAST_MAC_ADDRESS {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+#define ZERO_MAC_ADDRESS {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 typedef struct arp_header {
 	uint16_t hardware_type;
@@ -41,5 +43,10 @@ int initialize_arp(ethernet_frame* frame,
                     uint8_t sender_protcol_address[], size_t sender_protcol_size,
                     uint8_t target_protcol_address[], size_t target_protcol_size,
                     uint16_t operation);
+
+int get_mac_address(uint8_t sender_hardware_address[], size_t sender_hardware_size,
+                    uint8_t sender_protcol_address[], size_t sender_protcol_size,
+                    uint8_t target_protcol_address[], size_t target_protcol_size,
+					uint8_t** received_hardware_address, int raw_socket_fd);
 
 #endif

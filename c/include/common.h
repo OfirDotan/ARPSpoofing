@@ -1,0 +1,1 @@
+#define FAIL_AND_CLEANUP do { status = -1; goto l_cleanup; } while(0)
