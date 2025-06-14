@@ -1,5 +1,4 @@
 #include <sys/socket.h> // For socket functions
-#include <unistd.h> // For close
 #include <arpa/inet.h> // For htons
 #include <net/if.h> // For if_nametoindex
 #include <netpacket/packet.h> // For sockaddr_ll
@@ -63,8 +62,5 @@ int send_frame(ethernet_frame* frame, int raw_socket_fd) {
 	status = bytes_sent;
 
 l_cleanup:
-    if (raw_socket_fd >= 0) {
-        close(raw_socket_fd);
-    }
     return status;
 }

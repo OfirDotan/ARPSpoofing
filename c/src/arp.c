@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <unistd.h> // For close
 #include <string.h>
 #include <stddef.h>
 #include <arpa/inet.h>
+#include <net/if.h> // For if_nametoindex
+#include <netpacket/packet.h> // For sockaddr_ll
 #include "common.h"
 #include "arp.h"
 #include "ether.h"
@@ -68,7 +69,17 @@ int get_mac_address(uint8_t sender_hardware_address[], size_t sender_hardware_si
 	}
 	uint8_t buffer[ARP_BUFFER_SIZE];
 
-	ssize_t received = recvfrom(raw_socket_fd, buffer, ARP_BUFFER_SIZE, 0, NULL, NULL);
+	struct sockaddr_ll socket_address;
+	memset(&socket_address, 0, sizeof(struct sockaddr_ll));
+	socklen_t socket_address_len = sizeof(struct sockaddr_ll);
+
+	socket_address.sll_family = AF_PACKET;
+	socket_address.sll_ifindex = if_nametoindex("ens33");
+	socket_address.sll_protocol = htons(ARP_CODE);
+
+	ssize_t received = recvfrom(raw_socket_fd, buffer, ARP_BUFFER_SIZE, 0, (struct sockaddr*)&socket_address, &socket_address_len);
+
+	printf("Received: %zd bytes\n", received);
 	if(received < 0){
 		FAIL_AND_CLEANUP;
 	}
@@ -78,12 +89,13 @@ int get_mac_address(uint8_t sender_hardware_address[], size_t sender_hardware_si
 	if(received_arp == NULL || received_arp->sender_hardware_address == NULL){
 		FAIL_AND_CLEANUP;
 	}
-
-	memcpy(received_hardware_address, received_arp->sender_hardware_address, MAC_ADDRESS_SIZE);
+	
+	*received_hardware_address = malloc(MAC_ADDRESS_SIZE);
+	memcpy(*received_hardware_address, received_arp->sender_hardware_address, MAC_ADDRESS_SIZE);
 
 l_cleanup:
-	if (raw_socket_fd >= 0) {
-		close(raw_socket_fd);
+	if(status < 0) {
+		received_hardware_address = NULL;
 	}
 	return status;
 }
