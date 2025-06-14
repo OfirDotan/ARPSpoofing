@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <arpa/inet.h>
+#include <string.h> // For memcpy
+#include <stddef.h> // For size_t
+#include <stdlib.h> // For malloc
+#include <arpa/inet.h> // For htons
 #include <net/if.h> // For if_nametoindex
 #include <netpacket/packet.h> // For sockaddr_ll
 #include "common.h"
@@ -89,7 +89,7 @@ int get_mac_address(uint8_t sender_hardware_address[], size_t sender_hardware_si
 	if(received_arp == NULL || received_arp->sender_hardware_address == NULL){
 		FAIL_AND_CLEANUP;
 	}
-	
+
 	*received_hardware_address = malloc(MAC_ADDRESS_SIZE);
 	memcpy(*received_hardware_address, received_arp->sender_hardware_address, MAC_ADDRESS_SIZE);
 
