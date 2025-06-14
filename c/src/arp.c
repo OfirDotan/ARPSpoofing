@@ -79,7 +79,6 @@ int get_mac_address(uint8_t sender_hardware_address[], size_t sender_hardware_si
 
 	ssize_t received = recvfrom(raw_socket_fd, buffer, ARP_BUFFER_SIZE, 0, (struct sockaddr*)&socket_address, &socket_address_len);
 
-	printf("Received: %zd bytes\n", received);
 	if(received < 0){
 		FAIL_AND_CLEANUP;
 	}
