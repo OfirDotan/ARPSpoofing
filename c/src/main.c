@@ -16,7 +16,7 @@ int main() {
 	int res = get_mac_address(
 		(uint8_t[]){0x00, 0x0C, 0x29, 0xF4, 0x92, 0xA0}, MAC_ADDRESS_SIZE,
 		(uint8_t[]){10, 0, 0, 79}, IP_ADDRESS_SIZE,
-		(uint8_t[]){10, 0, 0, 16}, IP_ADDRESS_SIZE,
+		(uint8_t[]){10, 0, 0, 9}, IP_ADDRESS_SIZE,
 		&target_hardware, raw_socket_fd
 	);
 	printf("Result: %d\n", res);
