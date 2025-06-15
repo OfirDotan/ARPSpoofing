@@ -1,10 +1,9 @@
 #ifndef ARP_H
 #define ARP_H
 
-#include "ether.h"
 #include <stddef.h> // For size_t
 #include <stdint.h> // For uint8_t, uint16_t
-
+#include "ether.h"
 
 #define MAC_ADDRESS_SIZE 6
 #define IP_ADDRESS_SIZE 4
@@ -31,15 +30,9 @@ typedef struct arp_header {
     uint8_t target_protocol_address[IP_ADDRESS_SIZE]; // Target's IP address
 } arp_header;
 
-
-typedef struct arp_packet {
-	ethernet_frame frame;
-	arp_header arpHeader;
-} arp_packet;
-
 int initialize_arp(ethernet_frame* frame, 
                     uint8_t sender_hardware_address[], size_t sender_hardware_size,
-                    uint8_t target_hardware_address[], size_t targetHardware_size,
+                    uint8_t target_hardware_address[], size_t target_hardware_size,
                     uint8_t sender_protcol_address[], size_t sender_protcol_size,
                     uint8_t target_protcol_address[], size_t target_protcol_size,
                     uint16_t operation);

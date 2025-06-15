@@ -10,9 +10,12 @@ int initialize_ethernet(ethernet_frame* frame,
 						uint8_t destination_address[], size_t destination_size, 
 						uint8_t source_address[], size_t source_size, 
 						uint16_t ethernet_type, uint8_t payload[], size_t payload_size) {
+	int status = 0;
 
-	if (destination_size != 6 || source_size != 6 || payload_size > 1500){
-		return -1;
+	CHECK_SIZE_OR_FAIL(destination_size, MAC_ADDRESS_SIZE);
+	CHECK_SIZE_OR_FAIL(source_size, MAC_ADDRESS_SIZE);
+	if (payload_size > 1500){
+		FAIL_AND_CLEANUP;
 	}
 
 	uint8_t default_payload[MINIMUM_PAYLOAD_SIZE] = {0};	
@@ -32,15 +35,14 @@ int initialize_ethernet(ethernet_frame* frame,
 	memcpy(frame->ethernet_header.source_address, source_address, MAC_ADDRESS_SIZE);
 	frame->ethernet_header.ethernet_type = htons(ethernet_type);
 
-	return 0;
+l_cleanup:
+	return status;
 }
 
 int send_frame(ethernet_frame* frame, int raw_socket_fd) {
 	int status = 0;
 
-	if (raw_socket_fd < 0) {
-		FAIL_AND_CLEANUP;
-	}
+	CHECK_STATUS(raw_socket_fd);
 	
 	struct sockaddr_ll socket_address;
 	memset(&socket_address, 0, sizeof(struct sockaddr_ll));
@@ -56,9 +58,7 @@ int send_frame(ethernet_frame* frame, int raw_socket_fd) {
 
 	ssize_t bytes_sent = sendto(raw_socket_fd, frame, frame_size, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll));
 
-	if (bytes_sent < 0) {
-		FAIL_AND_CLEANUP;
-	}
+	CHECK_STATUS(bytes_sent);
 	status = bytes_sent;
 
 l_cleanup:
