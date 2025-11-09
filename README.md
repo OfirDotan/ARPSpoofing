@@ -3,7 +3,7 @@
 ## Important To Note
 * The C implementation here is not complete and still needs rework. I need to complete the actual spoofing, as currently all there is here is just the tools to use it (AKA building the packets and sending it using RAW sockets).
 * Sometime in the future, I want to complete this project and rework my C code to be prettier and more formal.
-* I want to replace the bash script I created with proper CMake. 
+* I want to replace the bash script I created with a proper CMake file. 
 
 ## What is ARP? 🖥️🌐
 ARP (Address Resolution Protocol) is a protocol in computer networks that is typically used to retrieve the 2nd layer address (typically MAC) of a host using a 3rd layer address (typically IP).
